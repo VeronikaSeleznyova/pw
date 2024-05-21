@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { MainPage } from './pages/mainPage';
+import { MainPage } from '../__mock__/mainPage';
 
 test.describe('<Accounts>', () => {
   let mainPage;
@@ -15,6 +15,7 @@ test.describe('<Accounts>', () => {
   test.afterEach(async () => {
     await mainPage.close();
   });
+
 
   test('should render page', async ({ page }) => {
     await page.getByRole('switch', { name: 'Show All Services' }).click();
@@ -45,5 +46,12 @@ test.describe('<Accounts>', () => {
     await expect(
       page.getByRole('cell', { name: 'user.test@test.com' })
     ).toBeVisible();
+  });
+
+
+  test('switch on Infineon website', async ({ page }) => {
+    const page1Promise = page.waitForEvent('popup');
+    await page.getByText('Infineon Website').click();
+    const page1 = await page1Promise;
   });
 });
