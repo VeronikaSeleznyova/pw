@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
-import { MOCKED_ENDPOINTS } from './mockedEndpoints';
-import { ACCOUNT_TOKEN, USER_TOKEN } from './mockedToken';
+import { MOCKED_ENDPOINTS } from '../__mock__/mockedEndpoints';
+import { ACCOUNT_TOKEN, USER_TOKEN } from '../__mock__/mockedToken';
 
 export class MainPage {
   constructor(private readonly page: Page) {
