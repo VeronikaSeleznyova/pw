@@ -14,7 +14,7 @@ export const MOCKED_ENDPOINTS = {
         data: [{ userId: 'userId-1', userEmail: 'test.user1@test.test' }],
       }),
     },
-  },
+  },  
   users: {
     path: 'https://api.accounts.stage.osts-apps.com/user/invite/users',
     response: {

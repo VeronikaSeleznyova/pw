@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { MainPage } from '../__mock__/mainPage';
+import { MainPage } from '../pages/mainPage';
 
 test.describe('<Accounts>', () => {
   let mainPage;
