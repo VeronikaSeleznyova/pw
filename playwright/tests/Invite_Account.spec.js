@@ -1,6 +1,6 @@
 import { expect, test, Page } from '@playwright/test';
 import { MainPage } from '../pages/mainPage';
-import { AccountPage, InviteAccountPage,DeleteFromGroupPage } from '../pages/AccountPage';
+import { AccountPage, InviteAccountPage, DeleteFromGroupPage } from '../pages/AccountPage';
 
 
 test.describe('Invite Account Tests', () => {
@@ -27,6 +27,17 @@ test.describe('Invite Account Tests', () => {
     await mainPage.close();
   });
 
+
+  test('use the navigation panel in AM mode', async ({ page }) => {
+    await deleteFromGroupPage.goToAccountManagement();
+    await accountPage.navigateToAccountGroups();
+    await accountPage.goToHome();
+    await accountPage.navigateToAccountUsers();
+    await accountPage.goToHome();
+    await accountPage.navigateToPendingInvites();
+    await accountPage.goToHome();
+  });
+
   test('test cancel deletion group', async ({ page }) => {
     await page.getByRole('link', { name: 'Users' }).click();
     await page.getByTestId('edit-group-button').locator('path').click();
@@ -34,29 +45,17 @@ test.describe('Invite Account Tests', () => {
     await page.locator('ifx-button').filter({ hasText: 'Cancel' }).locator('a').click();
   });
 
-
-  test('test deletion the account to the group', async ({ page }) => {
-    await page.locator('div').filter({ hasText: /^Account Management$/ }).click();
-    await page.getByRole('link', { name: 'Groups' }).click();
-    await page.getByRole('row', { name: 'ACCT_admins' }).getByRole('img').click();
-    await page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').click();
-    await page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').fill('test@gmail.com');
-    await page.locator('ifx-button').filter({ hasText: 'Add User' }).locator('a').click();
-    await page.getByRole('row', { name: 'test@gmail.com PENDING' }).getByRole('img').click();
-    await page.locator('ifx-button').filter({ hasText: 'Delete User' }).locator('a').click();
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('test@gmail.com');
+  test('test deletion the account from the group', async ({ page }) => {
+    await deleteFromGroupPage.goToAccountManagement();
+    await deleteFromGroupPage.navigateToGroups();
+    await deleteFromGroupPage.addUserToGroup('test@gmail.com');
+    await deleteFromGroupPage.deleteUserFromGroup('test@gmail.com');
+    await deleteFromGroupPage.searchUser('test@gmail.com');
   });
 
 
-  test('use the navigation panel in AM mode', async ({ page }) => {
-  await page.locator('div').filter({ hasText: /^Account Management$/ }).click();
-  await page.getByText('Account Groups:').click();
-  await page.getByRole('navigation').getByRole('link', { name: 'Home' }).click();
-  await page.getByText('Account Users:').click();
-  await page.getByRole('navigation').getByRole('link', { name: 'Home' }).click();
-  await page.getByText('Pending Invites:').click();
-  await page.getByRole('navigation').getByRole('link', { name: 'Home' }).click();
-  });
-  
+
 });
+
+
+
