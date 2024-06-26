@@ -1,8 +1,24 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export class AccountPage {
   constructor(private readonly page: Page) {
     this.page = page;
+  }
+
+  async navigateToAccountGroups() {
+    await this.page.getByText('Account Groups:').click();
+  }
+
+  async navigateToAccountUsers() {
+    await this.page.getByText('Account Users:').click();
+  }
+
+  async navigateToPendingInvites() {
+    await this.page.getByText('Pending Invites:').click();
+  }
+
+  async goToHome() {
+    await this.page.getByRole('navigation').getByRole('link', { name: 'Home' }).click();
   }
 
   async searchAccount(accountName: string) {
@@ -68,6 +84,7 @@ export class InviteAccountPage {
       await this.page.locator('ifx-button').filter({ hasText: 'Invite New User' }).locator('a').click();
     }
   
+
     async enterEmail(email) {
       await this.page.getByTestId('user-input').getByPlaceholder('Enter email').click();
       await this.page.getByTestId('user-input').getByPlaceholder('Enter email').fill(email);
@@ -104,7 +121,9 @@ export class InviteAccountPage {
     async clickNotificationDropdown() {
       await this.page.getByTestId('notification-dropdown').getByRole('button').click();
     }
+
   }
+
 
 
   export class DeleteFromGroupPage {
@@ -137,7 +156,18 @@ export class InviteAccountPage {
       await this.page.getByPlaceholder('Search...').click();
       await this.page.getByPlaceholder('Search...').fill(email);
     }
+
+    async openNavigationNavbar() {
+      await this.page.getByLabel('a navigation navbar').getByRole('link').click();
+    }
+  
+    async deleteGroup() {
+      await this.page.getByTestId('delete-group-button').getByRole('img').click();
   }
 
+}
+
+
 module.exports = { AccountPage, InviteAccountPage, DeleteFromGroupPage };
+
 
