@@ -1,8 +1,24 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export class AccountPage {
   constructor(private readonly page: Page) {
     this.page = page;
+  }
+
+  async navigateToAccountGroups() {
+    await this.page.getByText('Account Groups:').click();
+  }
+
+  async navigateToAccountUsers() {
+    await this.page.getByText('Account Users:').click();
+  }
+
+  async navigateToPendingInvites() {
+    await this.page.getByText('Pending Invites:').click();
+  }
+
+  async goToHome() {
+    await this.page.getByRole('navigation').getByRole('link', { name: 'Home' }).click();
   }
 
   async searchAccount(accountName: string) {
@@ -68,6 +84,7 @@ export class InviteAccountPage {
       await this.page.locator('ifx-button').filter({ hasText: 'Invite New User' }).locator('a').click();
     }
   
+
     async enterEmail(email) {
       await this.page.getByTestId('user-input').getByPlaceholder('Enter email').click();
       await this.page.getByTestId('user-input').getByPlaceholder('Enter email').fill(email);
@@ -104,40 +121,12 @@ export class InviteAccountPage {
     async clickNotificationDropdown() {
       await this.page.getByTestId('notification-dropdown').getByRole('button').click();
     }
+
   }
 
 
-  export class DeleteFromGroupPage {
-    constructor(private readonly page: Page) {}
-  
-    async goToAccountManagement() {
-      await this.page.locator('div').filter({ hasText: /^Account Management$/ }).click();
-    }
-  
-    async goToGroups() {
-      await this.page.getByRole('link', { name: 'Groups' }).click();
-    }
-  
-    async selectGroup(groupName: string) {
-      await this.page.getByRole('row', { name: groupName }).getByRole('img').click();
-    }
-  
-    async addUserToGroup(email: string) {
-      await this.page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').click();
-      await this.page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').fill(email);
-      await this.page.locator('ifx-button').filter({ hasText: 'Add User' }).locator('a').click();
-    }
-  
-    async deleteUserFromGroup(email: string) {
-      await this.page.getByRole('row', { name: `${email} PENDING` }).getByRole('img').click();
-      await this.page.locator('ifx-button').filter({ hasText: 'Delete User' }).locator('a').click();
-    }
-  
-    async searchUser(email: string) {
-      await this.page.getByPlaceholder('Search...').click();
-      await this.page.getByPlaceholder('Search...').fill(email);
-    }
-  }
 
-module.exports = { AccountPage, InviteAccountPage, DeleteFromGroupPage };
+
+module.exports = { AccountPage, InviteAccountPage };
+
 
