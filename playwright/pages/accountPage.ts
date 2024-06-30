@@ -126,48 +126,7 @@ export class InviteAccountPage {
 
 
 
-  export class DeleteFromGroupPage {
-    constructor(private readonly page: Page) {}
-  
-    async goToAccountManagement() {
-      await this.page.locator('div').filter({ hasText: /^Account Management$/ }).click();
-    }
-  
-    async goToGroups() {
-      await this.page.getByRole('link', { name: 'Groups' }).click();
-    }
-  
-    async selectGroup(groupName: string) {
-      await this.page.getByRole('row', { name: groupName }).getByRole('img').click();
-    }
-  
-    async addUserToGroup(email: string) {
-      await this.page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').click();
-      await this.page.getByTestId('new-user-input').getByPlaceholder('Enter User Email').fill(email);
-      await this.page.locator('ifx-button').filter({ hasText: 'Add User' }).locator('a').click();
-    }
-  
-    async deleteUserFromGroup(email: string) {
-      await this.page.getByRole('row', { name: `${email} PENDING` }).getByRole('img').click();
-      await this.page.locator('ifx-button').filter({ hasText: 'Delete User' }).locator('a').click();
-    }
-  
-    async searchUser(email: string) {
-      await this.page.getByPlaceholder('Search...').click();
-      await this.page.getByPlaceholder('Search...').fill(email);
-    }
 
-    async openNavigationNavbar() {
-      await this.page.getByLabel('a navigation navbar').getByRole('link').click();
-    }
-  
-    async deleteGroup() {
-      await this.page.getByTestId('delete-group-button').getByRole('img').click();
-  }
-
-}
-
-
-module.exports = { AccountPage, InviteAccountPage, DeleteFromGroupPage };
+module.exports = { AccountPage, InviteAccountPage };
 
 

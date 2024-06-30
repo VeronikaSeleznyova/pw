@@ -54,4 +54,22 @@ test.describe('<Accounts>', () => {
     await page.getByText('Infineon Website').click();
     const page1 = await page1Promise;
   });
+
+
+test('swich through Privacy Police and Glossary', async ({ page }) => {
+  await page.getByText('© 1999 - 2024 Infineon').click();
+  const page1Promise = page.waitForEvent('popup');
+  await page.getByRole('link', { name: 'Terms' }).click();
+  const page1 = await page1Promise;
+  const page2Promise = page.waitForEvent('popup');
+  await page.getByRole('link', { name: 'Imprint' }).click();
+  const page2 = await page2Promise;
+  const page3Promise = page.waitForEvent('popup');
+  await page.getByRole('link', { name: 'Privacy Policy' }).click();
+  const page3 = await page3Promise;
+  const page4Promise = page.waitForEvent('popup');
+  await page.getByRole('link', { name: 'Glossary' }).click();
+  const page4 = await page4Promise;
+});
+
 });
