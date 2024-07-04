@@ -1,18 +1,22 @@
 const { expect, test } = require('@playwright/test');
 const { MainPage } = require('../pages/mainPage');
 const { UserManagementPage, AccountManagementPage } = require('../pages/userManagementPage');
+const { AccountPage, InviteAccountPage } = require('../pages/accountPage');
+
 
 test.describe('<Accounts>', () => {
   let mainPage;
-  let userManagementPage;
+  let accountPage;
+  let inviteAccountPage;
   let accountManagementPage;
+  let userManagementPage
 
-  
   test.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
-    userManagementPage = new UserManagementPage(page);
+    accountPage = new AccountPage(page);
+    inviteAccountPage = new InviteAccountPage(page);
     accountManagementPage = new AccountManagementPage(page);
-
+    userManagementPage = new UserManagementPage(page);
 
    await mainPage.login();
   });
@@ -48,8 +52,11 @@ test.describe('<Accounts>', () => {
 
   test('clear all preferences (pinned accounts) use CAP btn and actions', async ({ page }) => {
     await accountManagementPage.goToAccountManagement();
+    await accountPage.searchAccount('2');
     await accountManagementPage.pinAccount(2);
+    await accountPage.searchAccount('42');;
     await accountManagementPage.pinAccount(42);
+    await accountPage.searchAccount('40');
     await accountManagementPage.pinAccount(40);
     await accountManagementPage.goToHome();
     await userManagementPage.goToUserProfileManagement();
@@ -75,7 +82,7 @@ test.describe('<Accounts>', () => {
 
 
 test('clear recent services in the pteferences use actions', async ({ page }) => {
-   await page.locator('div').filter({ hasText: /^User Profile Management$/ }).click();
+   await userManagementPage.goToUserProfileManagement();
    const userElement = page.getByRole('heading', { name: 'User Profile' });
    await expect(userElement).toBeVisible();
    await page.getByRole('link', { name: 'Preferences' }).click();
@@ -90,7 +97,7 @@ test('clear recent services in the pteferences use actions', async ({ page }) =>
 });
 
 test('clear recent services use the Clear All Preferences btn', async ({ page }) => {
-  await page.locator('div').filter({ hasText: /^User Profile Management$/ }).click();
+  await userManagementPage.goToUserProfileManagement();
   const userElement = page.getByRole('heading', { name: 'User Profile' });
   await expect(userElement).toBeVisible();
   await page.getByRole('link', { name: 'Preferences' }).click();
@@ -106,7 +113,7 @@ test('clear recent services use the Clear All Preferences btn', async ({ page })
 
 
   test('create and delete an API Key', async ({ page }) => {
-    await page.locator('div').filter({ hasText: /^User Profile Management$/ }).click();
+    await userManagementPage.goToUserProfileManagement();
     const userElement = page.getByRole('heading', { name: 'User Profile' });
     await expect(userElement).toBeVisible();
     await page.getByText('Api keys:').click();

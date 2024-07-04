@@ -1,18 +1,22 @@
-import { expect, test, Page } from '@playwright/test';
-import { MainPage } from '../pages/mainPage';
-import { AccountPage, InviteAccountPage } from '../pages/AccountPage';
+const { expect, test } = require('@playwright/test');
+const { MainPage } = require('../pages/mainPage');
+const { UserManagementPage, AccountManagementPage } = require('../pages/userManagementPage');
+const { AccountPage, InviteAccountPage } = require('../pages/accountPage');
 
 
 test.describe('Invite Account Tests', () => {
   let mainPage;
   let accountPage;
   let inviteAccountPage;
+  let accountManagementPage;
+  let userManagementPage
 
   test.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     accountPage = new AccountPage(page);
     inviteAccountPage = new InviteAccountPage(page);
-
+    accountManagementPage = new AccountManagementPage(page);
+    userManagementPage = new UserManagementPage(page);
 
     await mainPage.login();
     await page.getByTestId('show-all-switch').locator('div').nth(2).click();
@@ -148,7 +152,6 @@ test('daleting a user on the Account Users page', async ({ page }) => {
   const noDataHeading = page.getByRole('heading', { name: 'No Data', exact: true });
   await expect(noDataHeading).toBeVisible();
 });
-
 
 
 test('cancel updating the group on the Update Group page', async ({ page }) => {  

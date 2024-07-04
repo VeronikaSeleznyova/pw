@@ -22,6 +22,10 @@ export class MainPage {
     });
   }
 
+  async gotoCreateAccount() {
+    await this.page.goto('https://ui.framework.stage.osts-apps.com/create-account?redirect=/');
+  }
+
   async gotoAccount() {
     await this.page.goto('https://api.users.stage.osts-apps.com/accounts');
   }

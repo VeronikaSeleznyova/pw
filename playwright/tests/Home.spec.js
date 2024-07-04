@@ -72,4 +72,82 @@ test('swich through Privacy Police and Glossary', async ({ page }) => {
   const page4 = await page4Promise;
 });
 
+
+test('check CSS variables on the Account mod', async ({ page }) => {
+  const button = page.locator('//*[@id="framework-root"]/div/div/div/div[2]/div[1]');
+  const reactPdfTextLayerValue = await button.evaluate(element =>
+    window.getComputedStyle(element).getPropertyValue('--react-pdf-text-layer')
+  );
+  const highlightBgColorValue = await button.evaluate(element =>
+    window.getComputedStyle(element).getPropertyValue('--highlight-bg-color')
+  );
+  expect(reactPdfTextLayerValue.trim()).toBe('1');
+  expect(highlightBgColorValue.trim()).toBe('rgba(180, 0, 170, 1)');
+});
+
+
+test('check error - Error occurred while attempting to create account. body/name must NOT have fewer than 5 characters', async ({ page }) => {
+  await page.getByRole('button', { name: 'test.user@platform.test' }).click();
+  await page.getByText('Create New Account').click();
+  const createAccountHeading = page.getByRole('heading', { name: 'Create Account' });
+  await expect(createAccountHeading).toBeVisible();
+  await page.getByLabel('*').click();
+  await page.getByLabel('*').fill('test');
+  await page.locator('ifx-button').filter({ hasText: 'Create' }).locator('a').click();
+  const errorLocator = page.locator('//*[@id="framework-root"]/div/div/form/ifx-alert');
+  await expect(errorLocator).toHaveText('Error occurred while attempting to create account. body/name must NOT have fewer than 5 characters');
+});
+
+
+test('check error - Error occurred while attempting to create account. duplicate account already exists', async ({ page }) => {
+  await page.getByRole('button', { name: 'test.user@platform.test' }).click();
+  await page.getByText('Create New Account').click();
+  const createAccountHeading = page.getByRole('heading', { name: 'Create Account' });
+  await expect(createAccountHeading).toBeVisible();
+  await page.getByLabel('*').click();
+  await page.getByLabel('*').fill('Test A12');
+  await page.locator('ifx-button').filter({ hasText: 'Create' }).locator('a').click();
+  const errorLocator = page.locator('//*[@id="framework-root"]/div/div/form/ifx-alert');
+  await expect(errorLocator).toHaveText('Error occurred while attempting to create account. duplicate account already exists');
+});
+
+
+test('cancel create the account', async ({ page }) => {
+  await page.getByRole('button', { name: 'test.user@platform.test' }).click();
+  await page.getByText('Create New Account').click();
+  const createAccountHeading = page.getByRole('heading', { name: 'Create Account' });
+  await expect(createAccountHeading).toBeVisible();
+  await page.getByLabel('*').click();
+  await page.getByLabel('*').fill('Test A12');
+  await page.locator('ifx-button').filter({ hasText: 'Cancel' }).locator('a')
+  const expectedElement = page.locator('#framework-root > div > header > ifx-navbar > div:nth-child(3) > div > div > span');
+  await expect(expectedElement).toBeVisible();
+});
+
+test('expect the "Create" button to be disabled (via CSS)', async ({ page }) => {
+  await page.getByRole('button', { name: 'test.user@platform.test' }).click();
+  await page.getByText('Create New Account').click();
+  const createAccountHeading = page.getByRole('heading', { name: 'Create Account' });
+  await expect(createAccountHeading).toBeVisible();
+  const createButton = page.locator('ifx-button:disabled');
+  await expect(createButton).not.toBeVisible(); 
+});
+
+
+test('create a new account with a unique account', async ({ page }) => {
+  const timestamp = Date.now().toString();
+  let accountName = `test${timestamp}`;
+  if (accountName.length < 5) {
+    accountName = accountName.padEnd(5, '0');
+  await page.getByRole('button', { name: 'test.user@platform.test' }).click();
+  await page.getByText('Create New Account').click();
+  const createAccountHeading = page.getByRole('heading', { name: 'Create Account' });
+  await expect(createAccountHeading).toBeVisible();
+  await page.getByLabel('*').fill('#text-field');
+  await page.locator('ifx-button').filter({ hasText: 'Create' }).locator('a').click();
+  const expectedElement = page.locator('#framework-root > div > header > ifx-navbar > div:nth-child(3) > div > div > span');
+  await expect(expectedElement).toBeVisible();
+  }
+});
+
 });
