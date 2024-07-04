@@ -1,17 +1,22 @@
-import { expect, test } from '@playwright/test';
-import { MainPage } from '../pages/mainPage';
-import { AccountPage, InviteAccountPage } from '../pages/AccountPage';
+const { expect, test } = require('@playwright/test');
+const { MainPage } = require('../pages/mainPage');
+const { UserManagementPage, AccountManagementPage } = require('../pages/userManagementPage');
+const { AccountPage, InviteAccountPage } = require('../pages/accountPage');
 
 
 test.describe('<Accounts>', () => {
   let mainPage;
   let accountPage;
   let inviteAccountPage;
+  let accountManagementPage;
+  let userManagementPage
 
   test.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     accountPage = new AccountPage(page);
     inviteAccountPage = new InviteAccountPage(page);
+    accountManagementPage = new AccountManagementPage(page);
+    userManagementPage = new UserManagementPage(page);
 
     await mainPage.login();
     });
@@ -19,15 +24,27 @@ test.describe('<Accounts>', () => {
   test.afterEach(async () => {
     await mainPage.close();
   });
-  
 
 
-test('pin acc on Select Account page', async ({ page }) => {
-  await page.getByTestId('show-all-switch').locator('div').nth(2).click();
-  await page.getByText('Account Management').click();
-  await accountPage.searchAccount('8');
-  await accountPage.pinAccount('8');
-  await page.getByRole('link', { name: 'Home' }).click();
+
+test('check the limit of the pinned accounts', async ({ page }) => {
+  await accountManagementPage.goToAccountManagement();
+  await accountPage.searchAccount('2');
+  await accountManagementPage.pinAccount(2);
+  await accountPage.searchAccount('42');;
+  await accountManagementPage.pinAccount(42);
+  await accountPage.searchAccount('40');
+  await accountManagementPage.pinAccount(40);
+  await accountPage.searchAccount('178');
+  await accountManagementPage.pinAccount(178);
+  await accountManagementPage.goToHome();
+  await userManagementPage.goToUserProfileManagement();
+  const userElement = page.getByRole('heading', { name: 'User Profile' });
+  await expect(userElement).toBeVisible();
+  await userManagementPage.goToPreferences();
+  const element4 = page.getByText('- 123 test 32');
+  await expect(element4).not.toBeVisible();
+  await userManagementPage.clearAllPreferences();
 });
 
 
