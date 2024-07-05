@@ -66,21 +66,41 @@ test.describe('Edit Account Tests', () => {
     await page.getByText('- Test A12').click();
   });
 
-
+  
   test('edit account', async ({ page }) => {
-    await accountPage.clickEditButton();
+    await page.getByTestId('edit-button').getByRole('button').click();
+    await accountPage.enterAccountName('Test');
+    await accountPage.clickUpdateButton();
+    await page.waitForTimeout(2000);
+    const errorLocator1 = page.locator('//*[@id="app-div"]/div/div/div[2]/div/ifx-alert'); 
+    await expect(errorLocator1).toHaveText(' Error occurred while attempting to update account details. body/name must NOT have fewer than 5 characters');
+    const accName = page.locator('//*[@id="app-div"]/div/div/div[2]/div/div[2]/div[2]/div/span[2]');
+    await expect(accName).toBeVisible();
+    await page.locator('ifx-alert div').nth(2).click();
+    await page.getByTestId('edit-button').getByRole('button').click();
+    await accountPage.enterAccountName('123 test 32');
+    await accountPage.clickUpdateButton();
+    await expect(accName).toBeVisible();
+    await page.waitForTimeout(2000);
+    const errorLocator2 = page.locator('//*[@id="app-div"]/div/div/div[2]/div/ifx-alert'); 
+    await expect(errorLocator2).toHaveText('Error occurred while attempting to update account details. name already exists');
+    await page.getByTestId('edit-button').getByRole('button').click();
     await accountPage.enterAccountName('Test A122');
     await accountPage.clickCancelButton();
-
-    await accountPage.clickEditButton();
+    await expect(accName).toBeVisible();
+    await page.getByTestId('edit-button').getByRole('button').click();
     await accountPage.enterAccountName('Test A122');
     await accountPage.clickUpdateButton();
-
-    await accountPage.clickEditButton();
+    const changedName = page.locator('//*[@id="app-div"]/div/div/div[2]/div/div[2]/div[2]/div/span[2]');
+    await expect(changedName).toBeVisible();
+    await page.getByTestId('edit-button').getByRole('button').click();
     await accountPage.enterAccountName('Test A12');
     await accountPage.clickUpdateButton();
-  });
+    await expect(accName).toBeVisible();
+   });
 });
+
+
 
 
 });
